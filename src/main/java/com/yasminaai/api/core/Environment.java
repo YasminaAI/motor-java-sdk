@@ -4,7 +4,9 @@
 package com.yasminaai.api.core;
 
 public final class Environment {
-    public static final Environment DEFAULT = new Environment("https://staging.yasmina.ai/api/v1/car-comp");
+    public static final Environment SANDBOX = new Environment("https://sandbox.yasmina.ai/api/v1/car-comp");
+
+    public static final Environment PRODUCTION = new Environment("https://production.yasmina.ai/api/v1/car-comp");
 
     private final String url;
 

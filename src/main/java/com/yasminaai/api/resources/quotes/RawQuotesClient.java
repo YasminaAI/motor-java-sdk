@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.yasminaai.api.core.ClientOptions;
 import com.yasminaai.api.core.MediaTypes;
 import com.yasminaai.api.core.ObjectMappers;
+import com.yasminaai.api.core.QueryStringMapper;
 import com.yasminaai.api.core.RequestOptions;
 import com.yasminaai.api.core.YasminaaiApiApiException;
 import com.yasminaai.api.core.YasminaaiApiException;
@@ -15,9 +16,10 @@ import com.yasminaai.api.errors.NotFoundError;
 import com.yasminaai.api.errors.UnauthorizedError;
 import com.yasminaai.api.resources.quotes.requests.DeleteQuoteRequestsIdRequest;
 import com.yasminaai.api.resources.quotes.requests.GetQuoteRequestsIdRequest;
+import com.yasminaai.api.resources.quotes.requests.GetQuoteRequestsRequest;
 import com.yasminaai.api.resources.quotes.requests.PostQuoteRequestsRequest;
 import com.yasminaai.api.resources.quotes.types.DeleteQuoteRequestsIdResponse;
-import com.yasminaai.api.resources.quotes.types.GetQuoteRequestsResponse;
+import com.yasminaai.api.types.PaginatedQuoteResponse;
 import com.yasminaai.api.types.QuoteResponse;
 import java.io.IOException;
 import okhttp3.Headers;
@@ -149,25 +151,53 @@ public class RawQuotesClient {
         }
     }
 
-    public YasminaaiApiHttpResponse<GetQuoteRequestsResponse> listQuotes() {
-        return listQuotes(null);
+    public YasminaaiApiHttpResponse<PaginatedQuoteResponse> listQuotes() {
+        return listQuotes(GetQuoteRequestsRequest.builder().build());
     }
 
-    public YasminaaiApiHttpResponse<GetQuoteRequestsResponse> listQuotes(RequestOptions requestOptions) {
+    public YasminaaiApiHttpResponse<PaginatedQuoteResponse> listQuotes(RequestOptions requestOptions) {
+        return listQuotes(GetQuoteRequestsRequest.builder().build(), requestOptions);
+    }
+
+    public YasminaaiApiHttpResponse<PaginatedQuoteResponse> listQuotes(GetQuoteRequestsRequest request) {
+        return listQuotes(request, null);
+    }
+
+    public YasminaaiApiHttpResponse<PaginatedQuoteResponse> listQuotes(
+            GetQuoteRequestsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("quote-requests");
+        if (request.getDateFrom().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "date_from", request.getDateFrom().get(), false);
+        }
+        if (request.getDateTo().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "date_to", request.getDateTo().get(), false);
+        }
+        if (request.getPerPage().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "per_page", request.getPerPage().get(), false);
+        }
+        if (request.getIncludeAggregates().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl,
+                    "include_aggregates",
+                    request.getIncludeAggregates().get(),
+                    false);
+        }
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
             });
         }
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json")
-                .build();
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
@@ -177,8 +207,16 @@ public class RawQuotesClient {
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new YasminaaiApiHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetQuoteRequestsResponse.class),
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, PaginatedQuoteResponse.class),
                         response);
+            }
+            try {
+                if (response.code() == 401) {
+                    throw new UnauthorizedError(
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
             }
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new YasminaaiApiApiException(
@@ -214,16 +252,20 @@ public class RawQuotesClient {
         try {
             body = RequestBody.create(
                     ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (JsonProcessingException e) {
-            throw new YasminaaiApiException("Failed to serialize request", e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("POST", body)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Content-Type", "application/json")
-                .addHeader("Accept", "application/json")
-                .build();
+                .addHeader("Accept", "application/json");
+        if (request.getAcceptLanguage().isPresent()) {
+            _requestBuilder.addHeader(
+                    "Accept-Language", request.getAcceptLanguage().get().toString());
+        }
+        Request okhttpRequest = _requestBuilder.build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);

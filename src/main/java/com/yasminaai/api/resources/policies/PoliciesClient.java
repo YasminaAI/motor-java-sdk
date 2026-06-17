@@ -8,8 +8,8 @@ import com.yasminaai.api.core.RequestOptions;
 import com.yasminaai.api.resources.policies.requests.GetPoliciesCarPolicyRequest;
 import com.yasminaai.api.resources.policies.requests.GetPoliciesRequest;
 import com.yasminaai.api.resources.policies.requests.PostPoliciesRequest;
+import com.yasminaai.api.types.PaginatedPolicyResponse;
 import com.yasminaai.api.types.Policy;
-import java.util.List;
 
 public class PoliciesClient {
     protected final ClientOptions clientOptions;
@@ -59,28 +59,28 @@ public class PoliciesClient {
     /**
      * Listing requested policies
      */
-    public List<Policy> listPolicies() {
+    public PaginatedPolicyResponse listPolicies() {
         return this.rawClient.listPolicies().body();
     }
 
     /**
      * Listing requested policies
      */
-    public List<Policy> listPolicies(RequestOptions requestOptions) {
+    public PaginatedPolicyResponse listPolicies(RequestOptions requestOptions) {
         return this.rawClient.listPolicies(requestOptions).body();
     }
 
     /**
      * Listing requested policies
      */
-    public List<Policy> listPolicies(GetPoliciesRequest request) {
+    public PaginatedPolicyResponse listPolicies(GetPoliciesRequest request) {
         return this.rawClient.listPolicies(request).body();
     }
 
     /**
      * Listing requested policies
      */
-    public List<Policy> listPolicies(GetPoliciesRequest request, RequestOptions requestOptions) {
+    public PaginatedPolicyResponse listPolicies(GetPoliciesRequest request, RequestOptions requestOptions) {
         return this.rawClient.listPolicies(request, requestOptions).body();
     }
 

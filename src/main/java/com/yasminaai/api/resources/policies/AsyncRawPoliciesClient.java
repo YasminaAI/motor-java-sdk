@@ -18,9 +18,9 @@ import com.yasminaai.api.errors.UnprocessableEntityError;
 import com.yasminaai.api.resources.policies.requests.GetPoliciesCarPolicyRequest;
 import com.yasminaai.api.resources.policies.requests.GetPoliciesRequest;
 import com.yasminaai.api.resources.policies.requests.PostPoliciesRequest;
+import com.yasminaai.api.types.PaginatedPolicyResponse;
 import com.yasminaai.api.types.Policy;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import okhttp3.Call;
@@ -119,28 +119,30 @@ public class AsyncRawPoliciesClient {
     /**
      * Listing requested policies
      */
-    public CompletableFuture<YasminaaiApiHttpResponse<List<Policy>>> listPolicies() {
+    public CompletableFuture<YasminaaiApiHttpResponse<PaginatedPolicyResponse>> listPolicies() {
         return listPolicies(GetPoliciesRequest.builder().build());
     }
 
     /**
      * Listing requested policies
      */
-    public CompletableFuture<YasminaaiApiHttpResponse<List<Policy>>> listPolicies(RequestOptions requestOptions) {
+    public CompletableFuture<YasminaaiApiHttpResponse<PaginatedPolicyResponse>> listPolicies(
+            RequestOptions requestOptions) {
         return listPolicies(GetPoliciesRequest.builder().build(), requestOptions);
     }
 
     /**
      * Listing requested policies
      */
-    public CompletableFuture<YasminaaiApiHttpResponse<List<Policy>>> listPolicies(GetPoliciesRequest request) {
+    public CompletableFuture<YasminaaiApiHttpResponse<PaginatedPolicyResponse>> listPolicies(
+            GetPoliciesRequest request) {
         return listPolicies(request, null);
     }
 
     /**
      * Listing requested policies
      */
-    public CompletableFuture<YasminaaiApiHttpResponse<List<Policy>>> listPolicies(
+    public CompletableFuture<YasminaaiApiHttpResponse<PaginatedPolicyResponse>> listPolicies(
             GetPoliciesRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -188,6 +190,21 @@ public class AsyncRawPoliciesClient {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "per_page", request.getPerPage().get(), false);
         }
+        if (request.getDateFrom().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "date_from", request.getDateFrom().get(), false);
+        }
+        if (request.getDateTo().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "date_to", request.getDateTo().get(), false);
+        }
+        if (request.getIncludeAggregates().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl,
+                    "include_aggregates",
+                    request.getIncludeAggregates().get(),
+                    false);
+        }
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -203,7 +220,7 @@ public class AsyncRawPoliciesClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<YasminaaiApiHttpResponse<List<Policy>>> future = new CompletableFuture<>();
+        CompletableFuture<YasminaaiApiHttpResponse<PaginatedPolicyResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -211,8 +228,7 @@ public class AsyncRawPoliciesClient {
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         future.complete(new YasminaaiApiHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(
-                                        responseBodyString, new TypeReference<List<Policy>>() {}),
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, PaginatedPolicyResponse.class),
                                 response));
                         return;
                     }

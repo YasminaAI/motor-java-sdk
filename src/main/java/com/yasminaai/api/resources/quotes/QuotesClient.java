@@ -7,9 +7,10 @@ import com.yasminaai.api.core.ClientOptions;
 import com.yasminaai.api.core.RequestOptions;
 import com.yasminaai.api.resources.quotes.requests.DeleteQuoteRequestsIdRequest;
 import com.yasminaai.api.resources.quotes.requests.GetQuoteRequestsIdRequest;
+import com.yasminaai.api.resources.quotes.requests.GetQuoteRequestsRequest;
 import com.yasminaai.api.resources.quotes.requests.PostQuoteRequestsRequest;
 import com.yasminaai.api.resources.quotes.types.DeleteQuoteRequestsIdResponse;
-import com.yasminaai.api.resources.quotes.types.GetQuoteRequestsResponse;
+import com.yasminaai.api.types.PaginatedQuoteResponse;
 import com.yasminaai.api.types.QuoteResponse;
 
 public class QuotesClient {
@@ -62,12 +63,20 @@ public class QuotesClient {
         return this.rawClient.deleteQuote(id, request, requestOptions).body();
     }
 
-    public GetQuoteRequestsResponse listQuotes() {
+    public PaginatedQuoteResponse listQuotes() {
         return this.rawClient.listQuotes().body();
     }
 
-    public GetQuoteRequestsResponse listQuotes(RequestOptions requestOptions) {
+    public PaginatedQuoteResponse listQuotes(RequestOptions requestOptions) {
         return this.rawClient.listQuotes(requestOptions).body();
+    }
+
+    public PaginatedQuoteResponse listQuotes(GetQuoteRequestsRequest request) {
+        return this.rawClient.listQuotes(request).body();
+    }
+
+    public PaginatedQuoteResponse listQuotes(GetQuoteRequestsRequest request, RequestOptions requestOptions) {
+        return this.rawClient.listQuotes(request, requestOptions).body();
     }
 
     /**

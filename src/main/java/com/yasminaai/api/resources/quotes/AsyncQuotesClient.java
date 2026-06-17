@@ -7,9 +7,10 @@ import com.yasminaai.api.core.ClientOptions;
 import com.yasminaai.api.core.RequestOptions;
 import com.yasminaai.api.resources.quotes.requests.DeleteQuoteRequestsIdRequest;
 import com.yasminaai.api.resources.quotes.requests.GetQuoteRequestsIdRequest;
+import com.yasminaai.api.resources.quotes.requests.GetQuoteRequestsRequest;
 import com.yasminaai.api.resources.quotes.requests.PostQuoteRequestsRequest;
 import com.yasminaai.api.resources.quotes.types.DeleteQuoteRequestsIdResponse;
-import com.yasminaai.api.resources.quotes.types.GetQuoteRequestsResponse;
+import com.yasminaai.api.types.PaginatedQuoteResponse;
 import com.yasminaai.api.types.QuoteResponse;
 import java.util.concurrent.CompletableFuture;
 
@@ -64,12 +65,21 @@ public class AsyncQuotesClient {
         return this.rawClient.deleteQuote(id, request, requestOptions).thenApply(response -> response.body());
     }
 
-    public CompletableFuture<GetQuoteRequestsResponse> listQuotes() {
+    public CompletableFuture<PaginatedQuoteResponse> listQuotes() {
         return this.rawClient.listQuotes().thenApply(response -> response.body());
     }
 
-    public CompletableFuture<GetQuoteRequestsResponse> listQuotes(RequestOptions requestOptions) {
+    public CompletableFuture<PaginatedQuoteResponse> listQuotes(RequestOptions requestOptions) {
         return this.rawClient.listQuotes(requestOptions).thenApply(response -> response.body());
+    }
+
+    public CompletableFuture<PaginatedQuoteResponse> listQuotes(GetQuoteRequestsRequest request) {
+        return this.rawClient.listQuotes(request).thenApply(response -> response.body());
+    }
+
+    public CompletableFuture<PaginatedQuoteResponse> listQuotes(
+            GetQuoteRequestsRequest request, RequestOptions requestOptions) {
+        return this.rawClient.listQuotes(request, requestOptions).thenApply(response -> response.body());
     }
 
     /**

@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.yasminaai.api.core.Nullable;
 import com.yasminaai.api.core.NullableNonemptyFilter;
 import com.yasminaai.api.core.ObjectMappers;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -43,6 +44,8 @@ public final class Policy {
 
     private final Optional<String> createdAt;
 
+    private final Optional<OffsetDateTime> uploadedAt;
+
     private final Optional<String> updatedAt;
 
     private final Optional<String> clientId;
@@ -66,6 +69,7 @@ public final class Policy {
             Optional<String> endDate,
             Optional<Boolean> isClaimed,
             Optional<String> createdAt,
+            Optional<OffsetDateTime> uploadedAt,
             Optional<String> updatedAt,
             Optional<String> clientId,
             Optional<String> canceledAt,
@@ -82,6 +86,7 @@ public final class Policy {
         this.endDate = endDate;
         this.isClaimed = isClaimed;
         this.createdAt = createdAt;
+        this.uploadedAt = uploadedAt;
         this.updatedAt = updatedAt;
         this.clientId = clientId;
         this.canceledAt = canceledAt;
@@ -140,6 +145,17 @@ public final class Policy {
         return createdAt;
     }
 
+    /**
+     * @return Timestamp when the provider policy document was attached. For issued motor policies this is the closest available issue/purchase timestamp.
+     */
+    @JsonIgnore
+    public Optional<OffsetDateTime> getUploadedAt() {
+        if (uploadedAt == null) {
+            return Optional.empty();
+        }
+        return uploadedAt;
+    }
+
     @JsonProperty("updated_at")
     public Optional<String> getUpdatedAt() {
         return updatedAt;
@@ -166,6 +182,12 @@ public final class Policy {
     @JsonProperty("cancellation_document")
     public Optional<String> getCancellationDocument() {
         return cancellationDocument;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("uploaded_at")
+    private Optional<OffsetDateTime> _getUploadedAt() {
+        return uploadedAt;
     }
 
     @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
@@ -196,6 +218,7 @@ public final class Policy {
                 && endDate.equals(other.endDate)
                 && isClaimed.equals(other.isClaimed)
                 && createdAt.equals(other.createdAt)
+                && uploadedAt.equals(other.uploadedAt)
                 && updatedAt.equals(other.updatedAt)
                 && clientId.equals(other.clientId)
                 && canceledAt.equals(other.canceledAt)
@@ -216,6 +239,7 @@ public final class Policy {
                 this.endDate,
                 this.isClaimed,
                 this.createdAt,
+                this.uploadedAt,
                 this.updatedAt,
                 this.clientId,
                 this.canceledAt,
@@ -254,6 +278,8 @@ public final class Policy {
 
         private Optional<String> createdAt = Optional.empty();
 
+        private Optional<OffsetDateTime> uploadedAt = Optional.empty();
+
         private Optional<String> updatedAt = Optional.empty();
 
         private Optional<String> clientId = Optional.empty();
@@ -280,6 +306,7 @@ public final class Policy {
             endDate(other.getEndDate());
             isClaimed(other.getIsClaimed());
             createdAt(other.getCreatedAt());
+            uploadedAt(other.getUploadedAt());
             updatedAt(other.getUpdatedAt());
             clientId(other.getClientId());
             canceledAt(other.getCanceledAt());
@@ -398,6 +425,31 @@ public final class Policy {
             return this;
         }
 
+        /**
+         * <p>Timestamp when the provider policy document was attached. For issued motor policies this is the closest available issue/purchase timestamp.</p>
+         */
+        @JsonSetter(value = "uploaded_at", nulls = Nulls.SKIP)
+        public Builder uploadedAt(Optional<OffsetDateTime> uploadedAt) {
+            this.uploadedAt = uploadedAt;
+            return this;
+        }
+
+        public Builder uploadedAt(OffsetDateTime uploadedAt) {
+            this.uploadedAt = Optional.ofNullable(uploadedAt);
+            return this;
+        }
+
+        public Builder uploadedAt(Nullable<OffsetDateTime> uploadedAt) {
+            if (uploadedAt.isNull()) {
+                this.uploadedAt = null;
+            } else if (uploadedAt.isEmpty()) {
+                this.uploadedAt = Optional.empty();
+            } else {
+                this.uploadedAt = Optional.of(uploadedAt.get());
+            }
+            return this;
+        }
+
         @JsonSetter(value = "updated_at", nulls = Nulls.SKIP)
         public Builder updatedAt(Optional<String> updatedAt) {
             this.updatedAt = updatedAt;
@@ -476,6 +528,7 @@ public final class Policy {
                     endDate,
                     isClaimed,
                     createdAt,
+                    uploadedAt,
                     updatedAt,
                     clientId,
                     canceledAt,

@@ -20,7 +20,7 @@ public class YasminaaiApiClientBuilder {
 
     private String token = null;
 
-    private Environment environment = Environment.DEFAULT;
+    private Environment environment = Environment.SANDBOX;
 
     private OkHttpClient httpClient;
 
