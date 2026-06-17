@@ -29,7 +29,7 @@ Add the dependency in your `build.gradle` file:
 
 ```groovy
 dependencies {
-  implementation 'ai.yasmina:motor-java:0.0.75'
+  implementation 'ai.yasmina:motor-java:0.0.8'
 }
 ```
 
@@ -41,7 +41,7 @@ Add the dependency in your `pom.xml` file:
 <dependency>
   <groupId>ai.yasmina</groupId>
   <artifactId>motor-java</artifactId>
-  <version>0.0.75</version>
+  <version>0.0.8</version>
 </dependency>
 ```
 
