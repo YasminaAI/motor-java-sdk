@@ -45,9 +45,9 @@ java {
 }
 
 
-group = 'ai.yasmina'
+group = 'io.github.yasminaai'
 
-version = '0.0.8'
+version = '0.0.82'
 
 jar {
     dependsOn(":generatePomFileForMavenPublication")
@@ -76,9 +76,9 @@ test {
 publishing {
     publications {
         maven(MavenPublication) {
-            groupId = 'ai.yasmina'
+            groupId = 'io.github.yasminaai'
             artifactId = 'motor-java'
-            version = '0.0.8'
+            version = '0.0.82'
             from components.java
             pom {
                 name = 'yasminaai'

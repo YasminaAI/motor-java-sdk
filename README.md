@@ -1,7 +1,7 @@
 # Yasminaai Java Library
 
 [![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2FYasminaAI%2Fmotor-java-sdk)
-[![Maven Central](https://img.shields.io/maven-central/v/ai.yasmina/motor-java)](https://central.sonatype.com/artifact/ai.yasmina/motor-java)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.yasminaai/motor-java)](https://central.sonatype.com/artifact/io.github.yasminaai/motor-java)
 
 The Yasminaai Java library provides convenient access to the Yasminaai APIs from Java.
 
@@ -29,7 +29,7 @@ Add the dependency in your `build.gradle` file:
 
 ```groovy
 dependencies {
-  implementation 'ai.yasmina:motor-java:0.0.8'
+  implementation 'io.github.yasminaai:motor-java:0.0.82'
 }
 ```
 
@@ -39,9 +39,9 @@ Add the dependency in your `pom.xml` file:
 
 ```xml
 <dependency>
-  <groupId>ai.yasmina</groupId>
+  <groupId>io.github.yasminaai</groupId>
   <artifactId>motor-java</artifactId>
-  <version>0.0.8</version>
+  <version>0.0.82</version>
 </dependency>
 ```
 
