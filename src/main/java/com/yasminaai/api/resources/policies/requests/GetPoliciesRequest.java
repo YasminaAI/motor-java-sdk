@@ -40,6 +40,12 @@ public final class GetPoliciesRequest {
 
     private final Optional<Integer> perPage;
 
+    private final Optional<String> dateFrom;
+
+    private final Optional<String> dateTo;
+
+    private final Optional<Boolean> includeAggregates;
+
     private final Map<String, Object> additionalProperties;
 
     private GetPoliciesRequest(
@@ -53,6 +59,9 @@ public final class GetPoliciesRequest {
             Optional<Double> minPrice,
             Optional<Double> maxPrice,
             Optional<Integer> perPage,
+            Optional<String> dateFrom,
+            Optional<String> dateTo,
+            Optional<Boolean> includeAggregates,
             Map<String, Object> additionalProperties) {
         this.quoteRequestId = quoteRequestId;
         this.quotePriceId = quotePriceId;
@@ -64,6 +73,9 @@ public final class GetPoliciesRequest {
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
         this.perPage = perPage;
+        this.dateFrom = dateFrom;
+        this.dateTo = dateTo;
+        this.includeAggregates = includeAggregates;
         this.additionalProperties = additionalProperties;
     }
 
@@ -117,6 +129,30 @@ public final class GetPoliciesRequest {
         return perPage;
     }
 
+    /**
+     * @return Inclusive lower bound for the policy date. For issued policies (<code>status=1</code>), this filters by <code>uploaded_at</code> (the provider policy issue timestamp) and falls back to <code>created_at</code> when <code>uploaded_at</code> is unavailable. For other statuses, this filters by <code>created_at</code>.
+     */
+    @JsonProperty("date_from")
+    public Optional<String> getDateFrom() {
+        return dateFrom;
+    }
+
+    /**
+     * @return Inclusive upper bound for the policy date. For issued policies (<code>status=1</code>), this filters by <code>uploaded_at</code> (the provider policy issue timestamp) and falls back to <code>created_at</code> when <code>uploaded_at</code> is unavailable. For other statuses, this filters by <code>created_at</code>.
+     */
+    @JsonProperty("date_to")
+    public Optional<String> getDateTo() {
+        return dateTo;
+    }
+
+    /**
+     * @return When true, includes policy totals, total price, and monthly buckets for the filtered result set.
+     */
+    @JsonProperty("include_aggregates")
+    public Optional<Boolean> getIncludeAggregates() {
+        return includeAggregates;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -138,7 +174,10 @@ public final class GetPoliciesRequest {
                 && status.equals(other.status)
                 && minPrice.equals(other.minPrice)
                 && maxPrice.equals(other.maxPrice)
-                && perPage.equals(other.perPage);
+                && perPage.equals(other.perPage)
+                && dateFrom.equals(other.dateFrom)
+                && dateTo.equals(other.dateTo)
+                && includeAggregates.equals(other.includeAggregates);
     }
 
     @java.lang.Override
@@ -153,7 +192,10 @@ public final class GetPoliciesRequest {
                 this.status,
                 this.minPrice,
                 this.maxPrice,
-                this.perPage);
+                this.perPage,
+                this.dateFrom,
+                this.dateTo,
+                this.includeAggregates);
     }
 
     @java.lang.Override
@@ -187,6 +229,12 @@ public final class GetPoliciesRequest {
 
         private Optional<Integer> perPage = Optional.empty();
 
+        private Optional<String> dateFrom = Optional.empty();
+
+        private Optional<String> dateTo = Optional.empty();
+
+        private Optional<Boolean> includeAggregates = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -203,6 +251,9 @@ public final class GetPoliciesRequest {
             minPrice(other.getMinPrice());
             maxPrice(other.getMaxPrice());
             perPage(other.getPerPage());
+            dateFrom(other.getDateFrom());
+            dateTo(other.getDateTo());
+            includeAggregates(other.getIncludeAggregates());
             return this;
         }
 
@@ -316,6 +367,48 @@ public final class GetPoliciesRequest {
             return this;
         }
 
+        /**
+         * <p>Inclusive lower bound for the policy date. For issued policies (<code>status=1</code>), this filters by <code>uploaded_at</code> (the provider policy issue timestamp) and falls back to <code>created_at</code> when <code>uploaded_at</code> is unavailable. For other statuses, this filters by <code>created_at</code>.</p>
+         */
+        @JsonSetter(value = "date_from", nulls = Nulls.SKIP)
+        public Builder dateFrom(Optional<String> dateFrom) {
+            this.dateFrom = dateFrom;
+            return this;
+        }
+
+        public Builder dateFrom(String dateFrom) {
+            this.dateFrom = Optional.ofNullable(dateFrom);
+            return this;
+        }
+
+        /**
+         * <p>Inclusive upper bound for the policy date. For issued policies (<code>status=1</code>), this filters by <code>uploaded_at</code> (the provider policy issue timestamp) and falls back to <code>created_at</code> when <code>uploaded_at</code> is unavailable. For other statuses, this filters by <code>created_at</code>.</p>
+         */
+        @JsonSetter(value = "date_to", nulls = Nulls.SKIP)
+        public Builder dateTo(Optional<String> dateTo) {
+            this.dateTo = dateTo;
+            return this;
+        }
+
+        public Builder dateTo(String dateTo) {
+            this.dateTo = Optional.ofNullable(dateTo);
+            return this;
+        }
+
+        /**
+         * <p>When true, includes policy totals, total price, and monthly buckets for the filtered result set.</p>
+         */
+        @JsonSetter(value = "include_aggregates", nulls = Nulls.SKIP)
+        public Builder includeAggregates(Optional<Boolean> includeAggregates) {
+            this.includeAggregates = includeAggregates;
+            return this;
+        }
+
+        public Builder includeAggregates(Boolean includeAggregates) {
+            this.includeAggregates = Optional.ofNullable(includeAggregates);
+            return this;
+        }
+
         public GetPoliciesRequest build() {
             return new GetPoliciesRequest(
                     quoteRequestId,
@@ -328,6 +421,9 @@ public final class GetPoliciesRequest {
                     minPrice,
                     maxPrice,
                     perPage,
+                    dateFrom,
+                    dateTo,
+                    includeAggregates,
                     additionalProperties);
         }
 

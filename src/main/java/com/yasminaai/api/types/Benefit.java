@@ -29,6 +29,8 @@ public final class Benefit {
 
     private final Optional<String> name;
 
+    private final Optional<String> nameAr;
+
     private final Optional<Double> amount;
 
     private final Optional<Double> vat;
@@ -41,6 +43,7 @@ public final class Benefit {
             Optional<String> quoteBenefitId,
             Optional<String> id,
             Optional<String> name,
+            Optional<String> nameAr,
             Optional<Double> amount,
             Optional<Double> vat,
             Optional<String> url,
@@ -48,6 +51,7 @@ public final class Benefit {
         this.quoteBenefitId = quoteBenefitId;
         this.id = id;
         this.name = name;
+        this.nameAr = nameAr;
         this.amount = amount;
         this.vat = vat;
         this.url = url;
@@ -67,6 +71,14 @@ public final class Benefit {
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
+    }
+
+    /**
+     * @return Arabic name of the benefit. Use this field instead of <code>name</code> when rendering Arabic UIs.
+     */
+    @JsonProperty("name_ar")
+    public Optional<String> getNameAr() {
+        return nameAr;
     }
 
     @JsonProperty("amount")
@@ -108,6 +120,7 @@ public final class Benefit {
         return quoteBenefitId.equals(other.quoteBenefitId)
                 && id.equals(other.id)
                 && name.equals(other.name)
+                && nameAr.equals(other.nameAr)
                 && amount.equals(other.amount)
                 && vat.equals(other.vat)
                 && url.equals(other.url);
@@ -115,7 +128,7 @@ public final class Benefit {
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.quoteBenefitId, this.id, this.name, this.amount, this.vat, this.url);
+        return Objects.hash(this.quoteBenefitId, this.id, this.name, this.nameAr, this.amount, this.vat, this.url);
     }
 
     @java.lang.Override
@@ -135,6 +148,8 @@ public final class Benefit {
 
         private Optional<String> name = Optional.empty();
 
+        private Optional<String> nameAr = Optional.empty();
+
         private Optional<Double> amount = Optional.empty();
 
         private Optional<Double> vat = Optional.empty();
@@ -150,6 +165,7 @@ public final class Benefit {
             quoteBenefitId(other.getQuoteBenefitId());
             id(other.getId());
             name(other.getName());
+            nameAr(other.getNameAr());
             amount(other.getAmount());
             vat(other.getVat());
             url(other.getUrl());
@@ -186,6 +202,20 @@ public final class Benefit {
 
         public Builder name(String name) {
             this.name = Optional.ofNullable(name);
+            return this;
+        }
+
+        /**
+         * <p>Arabic name of the benefit. Use this field instead of <code>name</code> when rendering Arabic UIs.</p>
+         */
+        @JsonSetter(value = "name_ar", nulls = Nulls.SKIP)
+        public Builder nameAr(Optional<String> nameAr) {
+            this.nameAr = nameAr;
+            return this;
+        }
+
+        public Builder nameAr(String nameAr) {
+            this.nameAr = Optional.ofNullable(nameAr);
             return this;
         }
 
@@ -234,7 +264,7 @@ public final class Benefit {
         }
 
         public Benefit build() {
-            return new Benefit(quoteBenefitId, id, name, amount, vat, url, additionalProperties);
+            return new Benefit(quoteBenefitId, id, name, nameAr, amount, vat, url, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

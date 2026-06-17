@@ -90,7 +90,7 @@ client.quotes().deleteQuote(
 </dl>
 </details>
 
-<details><summary><code>client.quotes.listQuotes() -> GetQuoteRequestsResponse</code></summary>
+<details><summary><code>client.quotes.listQuotes() -> PaginatedQuoteResponse</code></summary>
 <dl>
 <dd>
 
@@ -103,8 +103,55 @@ client.quotes().deleteQuote(
 <dd>
 
 ```java
-client.quotes().listQuotes();
+client.quotes().listQuotes(
+    GetQuoteRequestsRequest
+        .builder()
+        .dateFrom("2026-06-01")
+        .dateTo("2026-06-30")
+        .perPage(10)
+        .includeAggregates(true)
+        .build()
+);
 ```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**dateFrom:** `Optional<String>` — Inclusive lower bound for quote request creation date.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**dateTo:** `Optional<String>` — Inclusive upper bound for quote request creation date.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**perPage:** `Optional<Integer>` — Number of quote requests to return per page.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**includeAggregates:** `Optional<Boolean>` — When true, includes quote request totals and monthly buckets for the filtered result set.
+    
 </dd>
 </dl>
 </dd>
@@ -146,10 +193,10 @@ The Quote IDs can be used later to issue a policy
 client.quotes().requestQuotes(
     PostQuoteRequestsRequest
         .builder()
+        .otp("123456")
         .ownerId("owner_id")
         .phone("phone")
         .birthdate("2023-01-15")
-        .carSequenceNumber("car_sequence_number")
         .carEstimatedCost(1.1)
         .build()
 );
@@ -163,6 +210,22 @@ client.quotes().requestQuotes(
 
 <dl>
 <dd>
+
+<dl>
+<dd>
+
+**acceptLanguage:** `Optional<PostQuoteRequestsRequestAcceptLanguage>` — Set to ar to receive Arabic-localized quote content.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**otp:** `String` — The OTP received by the customer from the Request OTP API
+    
+</dd>
+</dl>
 
 <dl>
 <dd>
@@ -199,7 +262,15 @@ client.quotes().requestQuotes(
 <dl>
 <dd>
 
-**carSequenceNumber:** `String` — Car sequence number must be 8 or 9 digits
+**carSequenceNumber:** `Optional<String>` — Car sequence number must be 8 or 9 digits
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**customNumber:** `Optional<String>` — Custom car number between 1000000 and 9999999999 (for newly imported cars)
     
 </dd>
 </dl>
@@ -319,7 +390,7 @@ client.policies().showPolicy(
 </dl>
 </details>
 
-<details><summary><code>client.policies.listPolicies() -> List&amp;lt;Policy&amp;gt;</code></summary>
+<details><summary><code>client.policies.listPolicies() -> PaginatedPolicyResponse</code></summary>
 <dl>
 <dd>
 
@@ -349,6 +420,9 @@ Listing requested policies
 client.policies().listPolicies(
     GetPoliciesRequest
         .builder()
+        .dateFrom("2026-06-01")
+        .dateTo("2026-06-30")
+        .includeAggregates(true)
         .build()
 );
 ```
@@ -441,6 +515,30 @@ client.policies().listPolicies(
     
 </dd>
 </dl>
+
+<dl>
+<dd>
+
+**dateFrom:** `Optional<String>` — Inclusive lower bound for the policy date. For issued policies (`status=1`), this filters by `uploaded_at` (the provider policy issue timestamp) and falls back to `created_at` when `uploaded_at` is unavailable. For other statuses, this filters by `created_at`.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**dateTo:** `Optional<String>` — Inclusive upper bound for the policy date. For issued policies (`status=1`), this filters by `uploaded_at` (the provider policy issue timestamp) and falls back to `created_at` when `uploaded_at` is unavailable. For other statuses, this filters by `created_at`.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**includeAggregates:** `Optional<Boolean>` — When true, includes policy totals, total price, and monthly buckets for the filtered result set.
+    
+</dd>
+</dl>
 </dd>
 </dl>
 
@@ -479,6 +577,7 @@ For issuing a new policy
 client.policies().issuePolicy(
     PostPoliciesRequest
         .builder()
+        .otp("123456")
         .quoteRequestId(123)
         .quoteReferenceId("550e8400-e29b-41d4-a716-446655440000")
         .quotePriceId("550e8400-e29b-41d4-a716-446655440001")
@@ -494,6 +593,14 @@ client.policies().issuePolicy(
 
 <dl>
 <dd>
+
+<dl>
+<dd>
+
+**otp:** `String` — The OTP received by the customer from the Issue OTP API
+    
+</dd>
+</dl>
 
 <dl>
 <dd>

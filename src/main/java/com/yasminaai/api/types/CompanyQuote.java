@@ -23,6 +23,18 @@ import java.util.Optional;
 public final class CompanyQuote {
     private final Optional<String> companyName;
 
+    private final Optional<String> companyNameAr;
+
+    private final Optional<CompanyQuoteType> type;
+
+    private final Optional<String> insuranceTypeDisplay;
+
+    private final Optional<String> insuranceTypeDisplayAr;
+
+    private final Optional<String> companyLogoUrl;
+
+    private final Optional<String> squareCompanyLogoUrl;
+
     private final Optional<List<QuotePrice>> prices;
 
     private final Optional<List<Benefit>> benefits;
@@ -31,10 +43,22 @@ public final class CompanyQuote {
 
     private CompanyQuote(
             Optional<String> companyName,
+            Optional<String> companyNameAr,
+            Optional<CompanyQuoteType> type,
+            Optional<String> insuranceTypeDisplay,
+            Optional<String> insuranceTypeDisplayAr,
+            Optional<String> companyLogoUrl,
+            Optional<String> squareCompanyLogoUrl,
             Optional<List<QuotePrice>> prices,
             Optional<List<Benefit>> benefits,
             Map<String, Object> additionalProperties) {
         this.companyName = companyName;
+        this.companyNameAr = companyNameAr;
+        this.type = type;
+        this.insuranceTypeDisplay = insuranceTypeDisplay;
+        this.insuranceTypeDisplayAr = insuranceTypeDisplayAr;
+        this.companyLogoUrl = companyLogoUrl;
+        this.squareCompanyLogoUrl = squareCompanyLogoUrl;
         this.prices = prices;
         this.benefits = benefits;
         this.additionalProperties = additionalProperties;
@@ -43,6 +67,54 @@ public final class CompanyQuote {
     @JsonProperty("company_name")
     public Optional<String> getCompanyName() {
         return companyName;
+    }
+
+    /**
+     * @return Arabic name of the insurance company. Use this field instead of <code>company_name</code> when rendering Arabic UIs.
+     */
+    @JsonProperty("company_name_ar")
+    public Optional<String> getCompanyNameAr() {
+        return companyNameAr;
+    }
+
+    /**
+     * @return Normalised insurance category used to group and filter quotes. Always one of <code>TPL</code>, <code>TPL +</code>, or <code>Comprehensive</code>.
+     */
+    @JsonProperty("type")
+    public Optional<CompanyQuoteType> getType() {
+        return type;
+    }
+
+    /**
+     * @return The insurance type label exactly as the insurance provider intends it to be displayed. While <code>type</code> normalises all non-TPL / non-Comprehensive values into <code>TPL +</code>, this field preserves the original provider string (e.g. &quot;TPL Plus&quot;, &quot;Third Party Plus&quot;) and should be shown in the UI wherever the provider's own wording is preferred.
+     */
+    @JsonProperty("insurance_type_display")
+    public Optional<String> getInsuranceTypeDisplay() {
+        return insuranceTypeDisplay;
+    }
+
+    /**
+     * @return Arabic translation of <code>insurance_type_display</code>. Use this field for Arabic UIs. Falls back to the English value for provider-specific types that do not have a translation.
+     */
+    @JsonProperty("insurance_type_display_ar")
+    public Optional<String> getInsuranceTypeDisplayAr() {
+        return insuranceTypeDisplayAr;
+    }
+
+    /**
+     * @return CDN URL for the insurance company's logo.
+     */
+    @JsonProperty("company_logo_url")
+    public Optional<String> getCompanyLogoUrl() {
+        return companyLogoUrl;
+    }
+
+    /**
+     * @return CDN URL for the insurance company's square logo.
+     */
+    @JsonProperty("square_company_logo_url")
+    public Optional<String> getSquareCompanyLogoUrl() {
+        return squareCompanyLogoUrl;
     }
 
     @JsonProperty("prices")
@@ -67,12 +139,29 @@ public final class CompanyQuote {
     }
 
     private boolean equalTo(CompanyQuote other) {
-        return companyName.equals(other.companyName) && prices.equals(other.prices) && benefits.equals(other.benefits);
+        return companyName.equals(other.companyName)
+                && companyNameAr.equals(other.companyNameAr)
+                && type.equals(other.type)
+                && insuranceTypeDisplay.equals(other.insuranceTypeDisplay)
+                && insuranceTypeDisplayAr.equals(other.insuranceTypeDisplayAr)
+                && companyLogoUrl.equals(other.companyLogoUrl)
+                && squareCompanyLogoUrl.equals(other.squareCompanyLogoUrl)
+                && prices.equals(other.prices)
+                && benefits.equals(other.benefits);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.companyName, this.prices, this.benefits);
+        return Objects.hash(
+                this.companyName,
+                this.companyNameAr,
+                this.type,
+                this.insuranceTypeDisplay,
+                this.insuranceTypeDisplayAr,
+                this.companyLogoUrl,
+                this.squareCompanyLogoUrl,
+                this.prices,
+                this.benefits);
     }
 
     @java.lang.Override
@@ -88,6 +177,18 @@ public final class CompanyQuote {
     public static final class Builder {
         private Optional<String> companyName = Optional.empty();
 
+        private Optional<String> companyNameAr = Optional.empty();
+
+        private Optional<CompanyQuoteType> type = Optional.empty();
+
+        private Optional<String> insuranceTypeDisplay = Optional.empty();
+
+        private Optional<String> insuranceTypeDisplayAr = Optional.empty();
+
+        private Optional<String> companyLogoUrl = Optional.empty();
+
+        private Optional<String> squareCompanyLogoUrl = Optional.empty();
+
         private Optional<List<QuotePrice>> prices = Optional.empty();
 
         private Optional<List<Benefit>> benefits = Optional.empty();
@@ -99,6 +200,12 @@ public final class CompanyQuote {
 
         public Builder from(CompanyQuote other) {
             companyName(other.getCompanyName());
+            companyNameAr(other.getCompanyNameAr());
+            type(other.getType());
+            insuranceTypeDisplay(other.getInsuranceTypeDisplay());
+            insuranceTypeDisplayAr(other.getInsuranceTypeDisplayAr());
+            companyLogoUrl(other.getCompanyLogoUrl());
+            squareCompanyLogoUrl(other.getSquareCompanyLogoUrl());
             prices(other.getPrices());
             benefits(other.getBenefits());
             return this;
@@ -112,6 +219,90 @@ public final class CompanyQuote {
 
         public Builder companyName(String companyName) {
             this.companyName = Optional.ofNullable(companyName);
+            return this;
+        }
+
+        /**
+         * <p>Arabic name of the insurance company. Use this field instead of <code>company_name</code> when rendering Arabic UIs.</p>
+         */
+        @JsonSetter(value = "company_name_ar", nulls = Nulls.SKIP)
+        public Builder companyNameAr(Optional<String> companyNameAr) {
+            this.companyNameAr = companyNameAr;
+            return this;
+        }
+
+        public Builder companyNameAr(String companyNameAr) {
+            this.companyNameAr = Optional.ofNullable(companyNameAr);
+            return this;
+        }
+
+        /**
+         * <p>Normalised insurance category used to group and filter quotes. Always one of <code>TPL</code>, <code>TPL +</code>, or <code>Comprehensive</code>.</p>
+         */
+        @JsonSetter(value = "type", nulls = Nulls.SKIP)
+        public Builder type(Optional<CompanyQuoteType> type) {
+            this.type = type;
+            return this;
+        }
+
+        public Builder type(CompanyQuoteType type) {
+            this.type = Optional.ofNullable(type);
+            return this;
+        }
+
+        /**
+         * <p>The insurance type label exactly as the insurance provider intends it to be displayed. While <code>type</code> normalises all non-TPL / non-Comprehensive values into <code>TPL +</code>, this field preserves the original provider string (e.g. &quot;TPL Plus&quot;, &quot;Third Party Plus&quot;) and should be shown in the UI wherever the provider's own wording is preferred.</p>
+         */
+        @JsonSetter(value = "insurance_type_display", nulls = Nulls.SKIP)
+        public Builder insuranceTypeDisplay(Optional<String> insuranceTypeDisplay) {
+            this.insuranceTypeDisplay = insuranceTypeDisplay;
+            return this;
+        }
+
+        public Builder insuranceTypeDisplay(String insuranceTypeDisplay) {
+            this.insuranceTypeDisplay = Optional.ofNullable(insuranceTypeDisplay);
+            return this;
+        }
+
+        /**
+         * <p>Arabic translation of <code>insurance_type_display</code>. Use this field for Arabic UIs. Falls back to the English value for provider-specific types that do not have a translation.</p>
+         */
+        @JsonSetter(value = "insurance_type_display_ar", nulls = Nulls.SKIP)
+        public Builder insuranceTypeDisplayAr(Optional<String> insuranceTypeDisplayAr) {
+            this.insuranceTypeDisplayAr = insuranceTypeDisplayAr;
+            return this;
+        }
+
+        public Builder insuranceTypeDisplayAr(String insuranceTypeDisplayAr) {
+            this.insuranceTypeDisplayAr = Optional.ofNullable(insuranceTypeDisplayAr);
+            return this;
+        }
+
+        /**
+         * <p>CDN URL for the insurance company's logo.</p>
+         */
+        @JsonSetter(value = "company_logo_url", nulls = Nulls.SKIP)
+        public Builder companyLogoUrl(Optional<String> companyLogoUrl) {
+            this.companyLogoUrl = companyLogoUrl;
+            return this;
+        }
+
+        public Builder companyLogoUrl(String companyLogoUrl) {
+            this.companyLogoUrl = Optional.ofNullable(companyLogoUrl);
+            return this;
+        }
+
+        /**
+         * <p>CDN URL for the insurance company's square logo.</p>
+         */
+        @JsonSetter(value = "square_company_logo_url", nulls = Nulls.SKIP)
+        public Builder squareCompanyLogoUrl(Optional<String> squareCompanyLogoUrl) {
+            this.squareCompanyLogoUrl = squareCompanyLogoUrl;
+            return this;
+        }
+
+        public Builder squareCompanyLogoUrl(String squareCompanyLogoUrl) {
+            this.squareCompanyLogoUrl = Optional.ofNullable(squareCompanyLogoUrl);
             return this;
         }
 
@@ -138,7 +329,17 @@ public final class CompanyQuote {
         }
 
         public CompanyQuote build() {
-            return new CompanyQuote(companyName, prices, benefits, additionalProperties);
+            return new CompanyQuote(
+                    companyName,
+                    companyNameAr,
+                    type,
+                    insuranceTypeDisplay,
+                    insuranceTypeDisplayAr,
+                    companyLogoUrl,
+                    squareCompanyLogoUrl,
+                    prices,
+                    benefits,
+                    additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

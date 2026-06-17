@@ -43,10 +43,60 @@ java {
 }
 
 
+group = 'ai.yasmina'
+
+version = '0.0.27'
+
+jar {
+    dependsOn(":generatePomFileForMavenPublication")
+    archiveBaseName = "motor-java"
+}
+
+sourcesJar {
+    archiveBaseName = "motor-java"
+}
+
+javadocJar {
+    archiveBaseName = "motor-java"
+}
+
 test {
     useJUnitPlatform()
     testLogging {
         showStandardStreams = true
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'ai.yasmina'
+            artifactId = 'motor-java'
+            version = '0.0.27'
+            from components.java
+            pom {
+                licenses {
+                    license {
+                        name = 'The MIT License (MIT)'
+                        url = 'https://mit-license.org/'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/YasminaAI/motor-java-sdk.git'
+                    developerConnection = 'scm:git:git://github.com/YasminaAI/motor-java-sdk.git'
+                    url = 'https://github.com/YasminaAI/motor-java-sdk'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url "$System.env.MAVEN_PUBLISH_REGISTRY_URL"
+            credentials {
+                username "$System.env.MAVEN_USERNAME"
+                password "$System.env.MAVEN_PASSWORD"
+            }
+        }
     }
 }
 

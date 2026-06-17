@@ -30,6 +30,8 @@ public final class QuoteResponse {
 
     private final Optional<Integer> carSequenceNumber;
 
+    private final Optional<String> customNumber;
+
     private final Optional<Boolean> isOwnershipTransfer;
 
     private final Optional<Double> carEstimatedCost;
@@ -57,6 +59,7 @@ public final class QuoteResponse {
             Optional<String> phone,
             Optional<String> birthdate,
             Optional<Integer> carSequenceNumber,
+            Optional<String> customNumber,
             Optional<Boolean> isOwnershipTransfer,
             Optional<Double> carEstimatedCost,
             Optional<Integer> carModelYear,
@@ -72,6 +75,7 @@ public final class QuoteResponse {
         this.phone = phone;
         this.birthdate = birthdate;
         this.carSequenceNumber = carSequenceNumber;
+        this.customNumber = customNumber;
         this.isOwnershipTransfer = isOwnershipTransfer;
         this.carEstimatedCost = carEstimatedCost;
         this.carModelYear = carModelYear;
@@ -115,6 +119,14 @@ public final class QuoteResponse {
     @JsonProperty("car_sequence_number")
     public Optional<Integer> getCarSequenceNumber() {
         return carSequenceNumber;
+    }
+
+    /**
+     * @return Custom car number for newly imported cars (present when <code>custom_number</code> was used in the request)
+     */
+    @JsonProperty("custom_number")
+    public Optional<String> getCustomNumber() {
+        return customNumber;
     }
 
     /**
@@ -213,6 +225,7 @@ public final class QuoteResponse {
                 && phone.equals(other.phone)
                 && birthdate.equals(other.birthdate)
                 && carSequenceNumber.equals(other.carSequenceNumber)
+                && customNumber.equals(other.customNumber)
                 && isOwnershipTransfer.equals(other.isOwnershipTransfer)
                 && carEstimatedCost.equals(other.carEstimatedCost)
                 && carModelYear.equals(other.carModelYear)
@@ -232,6 +245,7 @@ public final class QuoteResponse {
                 this.phone,
                 this.birthdate,
                 this.carSequenceNumber,
+                this.customNumber,
                 this.isOwnershipTransfer,
                 this.carEstimatedCost,
                 this.carModelYear,
@@ -263,6 +277,8 @@ public final class QuoteResponse {
 
         private Optional<Integer> carSequenceNumber = Optional.empty();
 
+        private Optional<String> customNumber = Optional.empty();
+
         private Optional<Boolean> isOwnershipTransfer = Optional.empty();
 
         private Optional<Double> carEstimatedCost = Optional.empty();
@@ -293,6 +309,7 @@ public final class QuoteResponse {
             phone(other.getPhone());
             birthdate(other.getBirthdate());
             carSequenceNumber(other.getCarSequenceNumber());
+            customNumber(other.getCustomNumber());
             isOwnershipTransfer(other.getIsOwnershipTransfer());
             carEstimatedCost(other.getCarEstimatedCost());
             carModelYear(other.getCarModelYear());
@@ -359,6 +376,20 @@ public final class QuoteResponse {
 
         public Builder carSequenceNumber(Integer carSequenceNumber) {
             this.carSequenceNumber = Optional.ofNullable(carSequenceNumber);
+            return this;
+        }
+
+        /**
+         * <p>Custom car number for newly imported cars (present when <code>custom_number</code> was used in the request)</p>
+         */
+        @JsonSetter(value = "custom_number", nulls = Nulls.SKIP)
+        public Builder customNumber(Optional<String> customNumber) {
+            this.customNumber = customNumber;
+            return this;
+        }
+
+        public Builder customNumber(String customNumber) {
+            this.customNumber = Optional.ofNullable(customNumber);
             return this;
         }
 
@@ -508,6 +539,7 @@ public final class QuoteResponse {
                     phone,
                     birthdate,
                     carSequenceNumber,
+                    customNumber,
                     isOwnershipTransfer,
                     carEstimatedCost,
                     carModelYear,

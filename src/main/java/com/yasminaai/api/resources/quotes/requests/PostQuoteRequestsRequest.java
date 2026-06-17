@@ -5,6 +5,7 @@ package com.yasminaai.api.resources.quotes.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.yasminaai.api.core.ObjectMappers;
+import com.yasminaai.api.resources.quotes.types.PostQuoteRequestsRequestAcceptLanguage;
 import com.yasminaai.api.resources.quotes.types.PostQuoteRequestsRequestDriversItem;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +25,10 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = PostQuoteRequestsRequest.Builder.class)
 public final class PostQuoteRequestsRequest {
+    private final Optional<PostQuoteRequestsRequestAcceptLanguage> acceptLanguage;
+
+    private final String otp;
+
     private final String ownerId;
 
     private final Optional<String> email;
@@ -31,7 +37,9 @@ public final class PostQuoteRequestsRequest {
 
     private final String birthdate;
 
-    private final String carSequenceNumber;
+    private final Optional<String> carSequenceNumber;
+
+    private final Optional<String> customNumber;
 
     private final Optional<Boolean> isOwnershipTransfer;
 
@@ -48,11 +56,14 @@ public final class PostQuoteRequestsRequest {
     private final Map<String, Object> additionalProperties;
 
     private PostQuoteRequestsRequest(
+            Optional<PostQuoteRequestsRequestAcceptLanguage> acceptLanguage,
+            String otp,
             String ownerId,
             Optional<String> email,
             String phone,
             String birthdate,
-            String carSequenceNumber,
+            Optional<String> carSequenceNumber,
+            Optional<String> customNumber,
             Optional<Boolean> isOwnershipTransfer,
             Optional<String> currentCarOwnerId,
             double carEstimatedCost,
@@ -60,11 +71,14 @@ public final class PostQuoteRequestsRequest {
             Optional<String> startDate,
             Optional<List<PostQuoteRequestsRequestDriversItem>> drivers,
             Map<String, Object> additionalProperties) {
+        this.acceptLanguage = acceptLanguage;
+        this.otp = otp;
         this.ownerId = ownerId;
         this.email = email;
         this.phone = phone;
         this.birthdate = birthdate;
         this.carSequenceNumber = carSequenceNumber;
+        this.customNumber = customNumber;
         this.isOwnershipTransfer = isOwnershipTransfer;
         this.currentCarOwnerId = currentCarOwnerId;
         this.carEstimatedCost = carEstimatedCost;
@@ -72,6 +86,22 @@ public final class PostQuoteRequestsRequest {
         this.startDate = startDate;
         this.drivers = drivers;
         this.additionalProperties = additionalProperties;
+    }
+
+    /**
+     * @return Set to ar to receive Arabic-localized quote content.
+     */
+    @JsonIgnore
+    public Optional<PostQuoteRequestsRequestAcceptLanguage> getAcceptLanguage() {
+        return acceptLanguage;
+    }
+
+    /**
+     * @return The OTP received by the customer from the Request OTP API
+     */
+    @JsonProperty("otp")
+    public String getOtp() {
+        return otp;
     }
 
     /**
@@ -110,8 +140,16 @@ public final class PostQuoteRequestsRequest {
      * @return Car sequence number must be 8 or 9 digits
      */
     @JsonProperty("car_sequence_number")
-    public String getCarSequenceNumber() {
+    public Optional<String> getCarSequenceNumber() {
         return carSequenceNumber;
+    }
+
+    /**
+     * @return Custom car number between 1000000 and 9999999999 (for newly imported cars)
+     */
+    @JsonProperty("custom_number")
+    public Optional<String> getCustomNumber() {
+        return customNumber;
     }
 
     /**
@@ -174,11 +212,14 @@ public final class PostQuoteRequestsRequest {
     }
 
     private boolean equalTo(PostQuoteRequestsRequest other) {
-        return ownerId.equals(other.ownerId)
+        return acceptLanguage.equals(other.acceptLanguage)
+                && otp.equals(other.otp)
+                && ownerId.equals(other.ownerId)
                 && email.equals(other.email)
                 && phone.equals(other.phone)
                 && birthdate.equals(other.birthdate)
                 && carSequenceNumber.equals(other.carSequenceNumber)
+                && customNumber.equals(other.customNumber)
                 && isOwnershipTransfer.equals(other.isOwnershipTransfer)
                 && currentCarOwnerId.equals(other.currentCarOwnerId)
                 && carEstimatedCost == other.carEstimatedCost
@@ -190,11 +231,14 @@ public final class PostQuoteRequestsRequest {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
+                this.acceptLanguage,
+                this.otp,
                 this.ownerId,
                 this.email,
                 this.phone,
                 this.birthdate,
                 this.carSequenceNumber,
+                this.customNumber,
                 this.isOwnershipTransfer,
                 this.currentCarOwnerId,
                 this.carEstimatedCost,
@@ -208,8 +252,17 @@ public final class PostQuoteRequestsRequest {
         return ObjectMappers.stringify(this);
     }
 
-    public static OwnerIdStage builder() {
+    public static OtpStage builder() {
         return new Builder();
+    }
+
+    public interface OtpStage {
+        /**
+         * <p>The OTP received by the customer from the Request OTP API</p>
+         */
+        OwnerIdStage otp(@NotNull String otp);
+
+        Builder from(PostQuoteRequestsRequest other);
     }
 
     public interface OwnerIdStage {
@@ -217,8 +270,6 @@ public final class PostQuoteRequestsRequest {
          * <p>Owner ID must be 10 digits starting with 1, 2, or 7</p>
          */
         PhoneStage ownerId(@NotNull String ownerId);
-
-        Builder from(PostQuoteRequestsRequest other);
     }
 
     public interface PhoneStage {
@@ -232,14 +283,7 @@ public final class PostQuoteRequestsRequest {
         /**
          * <p>Birthdate in YYYY-MM-DD format</p>
          */
-        CarSequenceNumberStage birthdate(@NotNull String birthdate);
-    }
-
-    public interface CarSequenceNumberStage {
-        /**
-         * <p>Car sequence number must be 8 or 9 digits</p>
-         */
-        CarEstimatedCostStage carSequenceNumber(@NotNull String carSequenceNumber);
+        CarEstimatedCostStage birthdate(@NotNull String birthdate);
     }
 
     public interface CarEstimatedCostStage {
@@ -257,11 +301,32 @@ public final class PostQuoteRequestsRequest {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
+         * <p>Set to ar to receive Arabic-localized quote content.</p>
+         */
+        _FinalStage acceptLanguage(Optional<PostQuoteRequestsRequestAcceptLanguage> acceptLanguage);
+
+        _FinalStage acceptLanguage(PostQuoteRequestsRequestAcceptLanguage acceptLanguage);
+
+        /**
          * <p>Email address must be valid and belongs to the customer</p>
          */
         _FinalStage email(Optional<String> email);
 
         _FinalStage email(String email);
+
+        /**
+         * <p>Car sequence number must be 8 or 9 digits</p>
+         */
+        _FinalStage carSequenceNumber(Optional<String> carSequenceNumber);
+
+        _FinalStage carSequenceNumber(String carSequenceNumber);
+
+        /**
+         * <p>Custom car number between 1000000 and 9999999999 (for newly imported cars)</p>
+         */
+        _FinalStage customNumber(Optional<String> customNumber);
+
+        _FinalStage customNumber(String customNumber);
 
         /**
          * <p>Indicates if the ownership is being transferred</p>
@@ -301,19 +366,14 @@ public final class PostQuoteRequestsRequest {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder
-            implements OwnerIdStage,
-                    PhoneStage,
-                    BirthdateStage,
-                    CarSequenceNumberStage,
-                    CarEstimatedCostStage,
-                    _FinalStage {
+            implements OtpStage, OwnerIdStage, PhoneStage, BirthdateStage, CarEstimatedCostStage, _FinalStage {
+        private String otp;
+
         private String ownerId;
 
         private String phone;
 
         private String birthdate;
-
-        private String carSequenceNumber;
 
         private double carEstimatedCost;
 
@@ -327,7 +387,13 @@ public final class PostQuoteRequestsRequest {
 
         private Optional<Boolean> isOwnershipTransfer = Optional.empty();
 
+        private Optional<String> customNumber = Optional.empty();
+
+        private Optional<String> carSequenceNumber = Optional.empty();
+
         private Optional<String> email = Optional.empty();
+
+        private Optional<PostQuoteRequestsRequestAcceptLanguage> acceptLanguage = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -336,17 +402,32 @@ public final class PostQuoteRequestsRequest {
 
         @java.lang.Override
         public Builder from(PostQuoteRequestsRequest other) {
+            acceptLanguage(other.getAcceptLanguage());
+            otp(other.getOtp());
             ownerId(other.getOwnerId());
             email(other.getEmail());
             phone(other.getPhone());
             birthdate(other.getBirthdate());
             carSequenceNumber(other.getCarSequenceNumber());
+            customNumber(other.getCustomNumber());
             isOwnershipTransfer(other.getIsOwnershipTransfer());
             currentCarOwnerId(other.getCurrentCarOwnerId());
             carEstimatedCost(other.getCarEstimatedCost());
             carModelYear(other.getCarModelYear());
             startDate(other.getStartDate());
             drivers(other.getDrivers());
+            return this;
+        }
+
+        /**
+         * <p>The OTP received by the customer from the Request OTP API</p>
+         * <p>The OTP received by the customer from the Request OTP API</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        @JsonSetter("otp")
+        public OwnerIdStage otp(@NotNull String otp) {
+            this.otp = Objects.requireNonNull(otp, "otp must not be null");
             return this;
         }
 
@@ -381,20 +462,8 @@ public final class PostQuoteRequestsRequest {
          */
         @java.lang.Override
         @JsonSetter("birthdate")
-        public CarSequenceNumberStage birthdate(@NotNull String birthdate) {
+        public CarEstimatedCostStage birthdate(@NotNull String birthdate) {
             this.birthdate = Objects.requireNonNull(birthdate, "birthdate must not be null");
-            return this;
-        }
-
-        /**
-         * <p>Car sequence number must be 8 or 9 digits</p>
-         * <p>Car sequence number must be 8 or 9 digits</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        @JsonSetter("car_sequence_number")
-        public CarEstimatedCostStage carSequenceNumber(@NotNull String carSequenceNumber) {
-            this.carSequenceNumber = Objects.requireNonNull(carSequenceNumber, "carSequenceNumber must not be null");
             return this;
         }
 
@@ -511,6 +580,46 @@ public final class PostQuoteRequestsRequest {
         }
 
         /**
+         * <p>Custom car number between 1000000 and 9999999999 (for newly imported cars)</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage customNumber(String customNumber) {
+            this.customNumber = Optional.ofNullable(customNumber);
+            return this;
+        }
+
+        /**
+         * <p>Custom car number between 1000000 and 9999999999 (for newly imported cars)</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "custom_number", nulls = Nulls.SKIP)
+        public _FinalStage customNumber(Optional<String> customNumber) {
+            this.customNumber = customNumber;
+            return this;
+        }
+
+        /**
+         * <p>Car sequence number must be 8 or 9 digits</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage carSequenceNumber(String carSequenceNumber) {
+            this.carSequenceNumber = Optional.ofNullable(carSequenceNumber);
+            return this;
+        }
+
+        /**
+         * <p>Car sequence number must be 8 or 9 digits</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "car_sequence_number", nulls = Nulls.SKIP)
+        public _FinalStage carSequenceNumber(Optional<String> carSequenceNumber) {
+            this.carSequenceNumber = carSequenceNumber;
+            return this;
+        }
+
+        /**
          * <p>Email address must be valid and belongs to the customer</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -530,14 +639,36 @@ public final class PostQuoteRequestsRequest {
             return this;
         }
 
+        /**
+         * <p>Set to ar to receive Arabic-localized quote content.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage acceptLanguage(PostQuoteRequestsRequestAcceptLanguage acceptLanguage) {
+            this.acceptLanguage = Optional.ofNullable(acceptLanguage);
+            return this;
+        }
+
+        /**
+         * <p>Set to ar to receive Arabic-localized quote content.</p>
+         */
+        @java.lang.Override
+        public _FinalStage acceptLanguage(Optional<PostQuoteRequestsRequestAcceptLanguage> acceptLanguage) {
+            this.acceptLanguage = acceptLanguage;
+            return this;
+        }
+
         @java.lang.Override
         public PostQuoteRequestsRequest build() {
             return new PostQuoteRequestsRequest(
+                    acceptLanguage,
+                    otp,
                     ownerId,
                     email,
                     phone,
                     birthdate,
                     carSequenceNumber,
+                    customNumber,
                     isOwnershipTransfer,
                     currentCarOwnerId,
                     carEstimatedCost,

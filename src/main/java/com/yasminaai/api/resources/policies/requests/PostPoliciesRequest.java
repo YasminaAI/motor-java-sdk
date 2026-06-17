@@ -22,6 +22,8 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = PostPoliciesRequest.Builder.class)
 public final class PostPoliciesRequest {
+    private final String otp;
+
     private final int quoteRequestId;
 
     private final String quoteReferenceId;
@@ -35,18 +37,28 @@ public final class PostPoliciesRequest {
     private final Map<String, Object> additionalProperties;
 
     private PostPoliciesRequest(
+            String otp,
             int quoteRequestId,
             String quoteReferenceId,
             String quotePriceId,
             Optional<List<String>> benefits,
             Optional<Map<String, Object>> extraFields,
             Map<String, Object> additionalProperties) {
+        this.otp = otp;
         this.quoteRequestId = quoteRequestId;
         this.quoteReferenceId = quoteReferenceId;
         this.quotePriceId = quotePriceId;
         this.benefits = benefits;
         this.extraFields = extraFields;
         this.additionalProperties = additionalProperties;
+    }
+
+    /**
+     * @return The OTP received by the customer from the Issue OTP API
+     */
+    @JsonProperty("otp")
+    public String getOtp() {
+        return otp;
     }
 
     /**
@@ -101,7 +113,8 @@ public final class PostPoliciesRequest {
     }
 
     private boolean equalTo(PostPoliciesRequest other) {
-        return quoteRequestId == other.quoteRequestId
+        return otp.equals(other.otp)
+                && quoteRequestId == other.quoteRequestId
                 && quoteReferenceId.equals(other.quoteReferenceId)
                 && quotePriceId.equals(other.quotePriceId)
                 && benefits.equals(other.benefits)
@@ -111,7 +124,12 @@ public final class PostPoliciesRequest {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.quoteRequestId, this.quoteReferenceId, this.quotePriceId, this.benefits, this.extraFields);
+                this.otp,
+                this.quoteRequestId,
+                this.quoteReferenceId,
+                this.quotePriceId,
+                this.benefits,
+                this.extraFields);
     }
 
     @java.lang.Override
@@ -119,8 +137,17 @@ public final class PostPoliciesRequest {
         return ObjectMappers.stringify(this);
     }
 
-    public static QuoteRequestIdStage builder() {
+    public static OtpStage builder() {
         return new Builder();
+    }
+
+    public interface OtpStage {
+        /**
+         * <p>The OTP received by the customer from the Issue OTP API</p>
+         */
+        QuoteRequestIdStage otp(@NotNull String otp);
+
+        Builder from(PostPoliciesRequest other);
     }
 
     public interface QuoteRequestIdStage {
@@ -128,8 +155,6 @@ public final class PostPoliciesRequest {
          * <p>ID of the car quote request</p>
          */
         QuoteReferenceIdStage quoteRequestId(int quoteRequestId);
-
-        Builder from(PostPoliciesRequest other);
     }
 
     public interface QuoteReferenceIdStage {
@@ -170,7 +195,9 @@ public final class PostPoliciesRequest {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder
-            implements QuoteRequestIdStage, QuoteReferenceIdStage, QuotePriceIdStage, _FinalStage {
+            implements OtpStage, QuoteRequestIdStage, QuoteReferenceIdStage, QuotePriceIdStage, _FinalStage {
+        private String otp;
+
         private int quoteRequestId;
 
         private String quoteReferenceId;
@@ -188,11 +215,24 @@ public final class PostPoliciesRequest {
 
         @java.lang.Override
         public Builder from(PostPoliciesRequest other) {
+            otp(other.getOtp());
             quoteRequestId(other.getQuoteRequestId());
             quoteReferenceId(other.getQuoteReferenceId());
             quotePriceId(other.getQuotePriceId());
             benefits(other.getBenefits());
             extraFields(other.getExtraFields());
+            return this;
+        }
+
+        /**
+         * <p>The OTP received by the customer from the Issue OTP API</p>
+         * <p>The OTP received by the customer from the Issue OTP API</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        @JsonSetter("otp")
+        public QuoteRequestIdStage otp(@NotNull String otp) {
+            this.otp = Objects.requireNonNull(otp, "otp must not be null");
             return this;
         }
 
@@ -275,7 +315,7 @@ public final class PostPoliciesRequest {
         @java.lang.Override
         public PostPoliciesRequest build() {
             return new PostPoliciesRequest(
-                    quoteRequestId, quoteReferenceId, quotePriceId, benefits, extraFields, additionalProperties);
+                    otp, quoteRequestId, quoteReferenceId, quotePriceId, benefits, extraFields, additionalProperties);
         }
 
         @java.lang.Override

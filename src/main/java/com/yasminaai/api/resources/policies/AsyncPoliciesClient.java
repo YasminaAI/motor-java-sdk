@@ -8,8 +8,8 @@ import com.yasminaai.api.core.RequestOptions;
 import com.yasminaai.api.resources.policies.requests.GetPoliciesCarPolicyRequest;
 import com.yasminaai.api.resources.policies.requests.GetPoliciesRequest;
 import com.yasminaai.api.resources.policies.requests.PostPoliciesRequest;
+import com.yasminaai.api.types.PaginatedPolicyResponse;
 import com.yasminaai.api.types.Policy;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class AsyncPoliciesClient {
@@ -61,28 +61,29 @@ public class AsyncPoliciesClient {
     /**
      * Listing requested policies
      */
-    public CompletableFuture<List<Policy>> listPolicies() {
+    public CompletableFuture<PaginatedPolicyResponse> listPolicies() {
         return this.rawClient.listPolicies().thenApply(response -> response.body());
     }
 
     /**
      * Listing requested policies
      */
-    public CompletableFuture<List<Policy>> listPolicies(RequestOptions requestOptions) {
+    public CompletableFuture<PaginatedPolicyResponse> listPolicies(RequestOptions requestOptions) {
         return this.rawClient.listPolicies(requestOptions).thenApply(response -> response.body());
     }
 
     /**
      * Listing requested policies
      */
-    public CompletableFuture<List<Policy>> listPolicies(GetPoliciesRequest request) {
+    public CompletableFuture<PaginatedPolicyResponse> listPolicies(GetPoliciesRequest request) {
         return this.rawClient.listPolicies(request).thenApply(response -> response.body());
     }
 
     /**
      * Listing requested policies
      */
-    public CompletableFuture<List<Policy>> listPolicies(GetPoliciesRequest request, RequestOptions requestOptions) {
+    public CompletableFuture<PaginatedPolicyResponse> listPolicies(
+            GetPoliciesRequest request, RequestOptions requestOptions) {
         return this.rawClient.listPolicies(request, requestOptions).thenApply(response -> response.body());
     }
 

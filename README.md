@@ -1,11 +1,13 @@
 # Yasminaai Java Library
 
 [![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2FYasminaAI%2Fmotor-java-sdk)
+[![Maven Central](https://img.shields.io/maven-central/v/ai.yasmina/motor-java)](https://central.sonatype.com/artifact/ai.yasmina/motor-java)
 
 The Yasminaai Java library provides convenient access to the Yasminaai APIs from Java.
 
 ## Table of Contents
 
+- [Installation](#installation)
 - [Reference](#reference)
 - [Usage](#usage)
 - [Environments](#environments)
@@ -18,6 +20,30 @@ The Yasminaai Java library provides convenient access to the Yasminaai APIs from
   - [Custom Headers](#custom-headers)
   - [Access Raw Response Data](#access-raw-response-data)
 - [Contributing](#contributing)
+
+## Installation
+
+### Gradle
+
+Add the dependency in your `build.gradle` file:
+
+```groovy
+dependencies {
+  implementation 'ai.yasmina:motor-java:0.0.27'
+}
+```
+
+### Maven
+
+Add the dependency in your `pom.xml` file:
+
+```xml
+<dependency>
+  <groupId>ai.yasmina</groupId>
+  <artifactId>motor-java</artifactId>
+  <version>0.0.27</version>
+</dependency>
+```
 
 ## Reference
 
@@ -43,10 +69,10 @@ public class Example {
         client.quotes().requestQuotes(
             PostQuoteRequestsRequest
                 .builder()
+                .otp("123456")
                 .ownerId("owner_id")
                 .phone("phone")
                 .birthdate("2023-01-15")
-                .carSequenceNumber("car_sequence_number")
                 .carEstimatedCost(1.1)
                 .build()
         );
@@ -64,7 +90,7 @@ import com.yasminaai.api.core.Environment;
 
 YasminaaiApiClient client = YasminaaiApiClient
     .builder()
-    .environment(Environment.Default)
+    .environment(Environment.Sandbox)
     .build();
 ```
 
