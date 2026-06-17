@@ -47,7 +47,7 @@ java {
 
 group = 'ai.yasmina'
 
-version = '0.0.40'
+version = '0.0.45'
 
 jar {
     dependsOn(":generatePomFileForMavenPublication")
@@ -78,7 +78,7 @@ publishing {
         maven(MavenPublication) {
             groupId = 'ai.yasmina'
             artifactId = 'motor-java'
-            version = '0.0.40'
+            version = '0.0.45'
             from components.java
             pom {
                 name = 'yasminaai'
@@ -96,9 +96,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = 'scm:git:git://github.com/YasminaAI/motor-java-sdk.git'
-                    developerConnection = 'scm:git:git://github.com/YasminaAI/motor-java-sdk.git'
-                    url = 'https://github.com/YasminaAI/motor-java-sdk'
+                    connection = 'scm:git:git://github.com/yasminaai/motor-java-sdk.git'
+                    developerConnection = 'scm:git:git://github.com/yasminaai/motor-java-sdk.git'
+                    url = 'https://github.com/yasminaai/motor-java-sdk'
                 }
             }
         }
