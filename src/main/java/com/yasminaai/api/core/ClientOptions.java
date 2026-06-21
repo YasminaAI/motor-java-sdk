@@ -38,10 +38,10 @@ public final class ClientOptions {
         this.headers.putAll(headers);
         this.headers.putAll(new HashMap<String, String>() {
             {
-                put("User-Agent", "io.github.yasminaai:motor-java/0.0.86");
+                put("User-Agent", "io.github.yasminaai:motor-java/0.1.0");
                 put("X-Fern-Language", "JAVA");
                 put("X-Fern-SDK-Name", "com.yasminaai.fern:api-sdk");
-                put("X-Fern-SDK-Version", "0.0.86");
+                put("X-Fern-SDK-Version", "0.1.0");
             }
         });
         this.headerSuppliers = headerSuppliers;
